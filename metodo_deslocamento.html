@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento Complementar: Análise Matricial de Treliças</title>
+    <!-- MathJax para renderização de fórmulas matemáticas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a73e8;
+            --secondary-color: #f8f9fa;
+            --accent-color: #e8f0fe;
+            --text-color: #202124;
+            --border-color: #dadce0;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: #f0f2f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 950px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 12px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #202124;
+            margin-top: 35px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 6px;
+        }
+        h3 {
+            color: #5f6368;
+            margin-top: 25px;
+        }
+        .example-box {
+            background-color: var(--secondary-color);
+            border-left: 4px solid var(--primary-color);
+            padding: 20px;
+            margin: 25px 0;
+            border-radius: 0 6px 6px 0;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .example-box h4 {
+            margin-top: 0;
+            color: var(--primary-color);
+            font-size: 1.15em;
+        }
+        ul {
+            padding-left: 20px;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        .math-block {
+            text-align: center;
+            overflow-x: auto;
+            margin: 15px 0;
+            padding: 5px;
+        }
+        .badge {
+            background-color: var(--accent-color);
+            color: var(--primary-color);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 0.85em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Documento Complementar: Análise Matricial de Treliças</h1>
+    <p>Material didático complementar baseado nas notas de aula do <a href="https://www.ce.memphis.edu/4122/notes/pdfs/notes_14a_stifness_method_trusses.pdf" target="_blank">Método dos Deslocamentos (Método da Rigidez)</a>. Este guia aprofunda a formulação teórica com os exemplos práticos de montagem de matrizes globais e cálculo de tensões.</p>
+
+    <hr>
+
+    <h2>1. Fundamentos e Formulação Básica</h2>
+    <p>O método da rigidez utiliza o conceito de superposição para relacionar forças e deslocamentos. Para uma barra de treliça isolada (coordenadas locais), a rigidez uniaxial é regida pela lei de Hooke:</p>
+    
+    <div class="math-block">
+        $$\begin{Bmatrix} q_N \\ q_F \end{Bmatrix} = \frac{AE}{L} \begin{bmatrix} 1 & -1 \\ -1 & 1 \end{bmatrix} \begin{Bmatrix} d_N \\ d_F \end{Bmatrix} \implies q = k' d$$
+    </div>
+
+    <p>Para levar a barra inclinada ao plano cartesiano global, aplicamos a matriz de transformação \(T\) baseada nos cossenos diretores (\(\lambda_x, \lambda_y\)), resultando na <strong>matriz de rigidez global do elemento</strong>:</p>
+
+    <div class="math-block">
+        $$k = T^T k' T$$
+    </div>
+
+    <hr>
+
+    <h2>2. Aprofundamento Prático: Exemplos do PDF</h2>
+
+    <!-- EXEMPLO 14.1 -->
+    <div class="example-box">
+        <h4><span class="badge">Exemplo 14.1</span> Montagem da Matriz de Rigidez da Estrutura ($K$)</h4>
+        <p><strong>Cenário:</strong> Uma treliça plana de duas barras (Membro 1 e Membro 2) conectadas no Nó 2, com os nós 1 e 3 totalmente engastados/apoiados (deslocamentos nulos).</p>
+        <ul>
+            <li><strong>Graus de Liberdade (GDLs):</strong> O Nó 2 possui duas direções livres (códigos 1 e 2). Os nós 1 e 3 possuem deslocamentos restritos (códigos 3 a 6).</li>
+            <li><strong>Cálculo dos Membros:</strong> Para cada barra, calculam-se os comprimentos \(L\) e os cossenos diretores (\(\lambda_x, \lambda_y\)) para montar a matriz \(6 \times 6\) global.</li>
+            <li><strong>Montagem da Matriz Global (\(K\)):</strong> Soma-se algebricamente a contribuição individual de cada barra preenchendo os espaços correspondentes aos códigos numéricos dos nós:
+                <div class="math-block">
+                    $$K = k_1 + k_2$$
+                </div>
+            </li>
+        </ul>
+        <p><em>Aplicação de Uso:</em> Esse processo de varredura e soma direta é exatamente o que programas de elementos finitos (como em Python, MATLAB ou C++) executam automaticamente para fechar a matriz da estrutura.</p>
+    </div>
+
+    <!-- EXEMPLO 14.2 -->
+    <div class="example-box">
+        <h4><span class="badge">Exemplo 14.2</span> Resolução Completa de uma Treliça Plana sob Carga</h4>
+        <p><strong>Cenário:</strong> Uma treliça de 3 barras submetida a uma carga vertical descendente de $10.000\text{ lb}$ no nó central. Dados: $A = 2\text{ in}^2$ e $E = 30 \times 10^6\text{ psi}$.</p>
+        
+        <ul>
+            <li><strong>Passo 1 - Equação Global Matricial:</strong> Com a matriz global montada, aplica-se a equação mestre particionada entre cargas e deslocamentos:
+                <div class="math-block">
+                    $$\begin{Bmatrix} Q_k \\ Q_u \end{Bmatrix} = \begin{bmatrix} K_{11} & K_{12} \\ K_{21} & K_{22} \end{bmatrix} \begin{Bmatrix} D_u \\ D_k \end{Bmatrix}$$
+                </div>
+            </li>
+            <li><strong>Passo 2 - Condições de Contorno e Deslocamentos:</strong> Como os apoios impedem o movimento, $D_k = 0$. Resolvendo o sistema reduzido para o nó carregado, obtêm-se os deslocamentos nodais:
+                <div class="math-block">
+                    $$D_1 = 0{,}414 \times 10^{-2}\text{ in} \quad \text{e} \quad D_2 = -1{,}59 \times 10^{-2}\text{ in}$$
+                </div>
+            </li>
+            <li><strong>Passo 3 - Cálculo das Tensões nas Barras:</strong> Utilizando os deslocamentos globais encontrados, calcula-se a tensão exata em cada barra por meio de:
+                <div class="math-block">
+                    $$\sigma = \frac{E}{L} \left[ -\lambda_x D_{Nx} - \lambda_y D_{Ny} + \lambda_x D_{Fx} + \lambda_y D_{Fy} \right]$$
+                </div>
+            </li>
+            <li><strong>Resultados Práticos:</strong>
+                <ul>
+                    <li>Barra 1: $\sigma^{(1)} \approx 3.965\text{ psi}$ (Tração)</li>
+                    <li>Barra 2: $\sigma^{(2)} \approx 1.471\text{ psi}$ (Tração)</li>
+                    <li>Barra 3: $\sigma^{(3)} \approx -1.035\text{ psi}$ (Compressão)</li>
+                </ul>
+            </li>
+        </ul>
+        <p><strong>Caso de Uso na Engenharia:</strong> Esse cálculo garante que as tensões geradas não ultrapassem o limite de escoamento do material estrutural, validando a segurança do projeto mecânico ou civil.</p>
+    </div>
+
+</div>
+
+</body>
+</html>
